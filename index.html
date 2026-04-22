@@ -494,6 +494,7 @@
       <button class="stop-circle-btn" id="stop-circle-btn" onclick="stopExercise()" title="Stop">⏹️</button>
       <div class="drill-counter-badge" id="drill-counter-badge" style="display:none;">0</div>
       <div class="mic-icon" id="mic-icon" ontouchstart="handlePushStart(event)" ontouchend="handlePushEnd(event)" onmousedown="handlePushStart(event)" onmouseup="handlePushEnd(event)">🎤</div>
+      <div class="mic-status" id="mic-status"></div>
     </div>
 
     <div class="manual-input" id="manual-input">
@@ -530,6 +531,7 @@
       <button class="stop-circle-btn" id="drill-stop-circle-btn" onclick="stopExercise()" title="Stop">⏹️</button>
       <div class="drill-counter-badge" id="drill-counter-badge-drill" style="display:none;">0</div>
       <div class="mic-icon" id="drill-mic-icon" ontouchstart="handleDrillPushStart(event)" ontouchend="handleDrillPushEnd(event)" onmousedown="handleDrillPushStart(event)" onmouseup="handleDrillPushEnd(event)">🎤</div>
+      <div class="mic-status" id="drill-mic-status"></div>
     </div>
     <div class="manual-input" id="drill-manual-input">
       <input type="text" id="drill-manual-text" placeholder="Scrivi la traduzione...">
@@ -582,8 +584,6 @@ let pendingEvalTimeout = null;
 // PUSH-TO-TALK state
 let isHolding = false;
 let currentTranscript = '';
-let restartCount = 0;
-const MAX_RESTARTS = 25;
 
 // --- Funzioni per salvare/caricare parametri S e W ---
 function saveLastParams() {
@@ -637,20 +637,12 @@ function _spawnRecognition(isDrillMode){
   currentRecognition.lang=exerciseMode==='en'?'it-IT':'en-US';
   currentRecognition.continuous=true;
   currentRecognition.interimResults=false;
-  currentRecognition.onresult=(e)=>{ restartCount=0; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) currentTranscript+=' '+e.results[i][0].transcript; } };
-  currentRecognition.onerror=(e)=>{
-    currentRecognition=null;
-    if(e.error==='not-allowed'||e.error==='service-not-allowed'){ isHolding=false; showToast('Permesso microfono revocato'); return; }
-    restartCount++;
-    if(isHolding && restartCount<=MAX_RESTARTS) setTimeout(()=>_spawnRecognition(isDrillMode), 250);
-    else if(restartCount>MAX_RESTARTS){ isHolding=false; showToast('Microfono instabile, riprova'); }
-  };
+  currentRecognition.onresult=(e)=>{ for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) currentTranscript+=' '+e.results[i][0].transcript; } };
+  currentRecognition.onerror=()=>{ currentRecognition=null; if(isHolding) setTimeout(()=>_spawnRecognition(isDrillMode), 250); };
   currentRecognition.onend=()=>{
     currentRecognition=null;
     if(isHolding){
-      restartCount++;
-      if(restartCount<=MAX_RESTARTS) setTimeout(()=>_spawnRecognition(isDrillMode), 150);
-      else { isHolding=false; showToast('Microfono instabile, riprova'); }
+      setTimeout(()=>_spawnRecognition(isDrillMode), 150);
     } else {
       micIcon.classList.remove('push-active');
       if(pendingEvalTimeout) clearTimeout(pendingEvalTimeout);
@@ -676,15 +668,15 @@ function stopPushListening(isDrillMode=false){
     try{ currentRecognition.stop(); }catch(e){}
   }
 }
-function handlePushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; restartCount=0; currentTranscript=''; if(currentRecognition) _killRecognition(); startPushListening(false);}
+function handlePushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; currentTranscript=''; if(currentRecognition) _killRecognition(); startPushListening(false);}
 function handlePushEnd(e){ e.preventDefault(); stopPushListening(false);}
-function handleDrillPushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; restartCount=0; currentTranscript=''; if(currentRecognition) _killRecognition(); startPushListening(true);}
+function handleDrillPushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; currentTranscript=''; if(currentRecognition) _killRecognition(); startPushListening(true);}
 function handleDrillPushEnd(e){ e.preventDefault(); stopPushListening(true);}
 
 function submitManual(){if(isPaused){showToast('Pausa');return;} const val=document.getElementById('manual-text').value.trim().toLowerCase(); if(!val)return; document.getElementById('manual-text').value=''; if(currentRecognition)stopPushListening(false); if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); isEvaluating=true; evaluateAnswer(val,false);}
 function submitDrillManual(){if(isPaused){showToast('Pausa');return;} const val=document.getElementById('drill-manual-text').value.trim().toLowerCase(); if(!val)return; document.getElementById('drill-manual-text').value=''; if(currentRecognition)stopPushListening(true); if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); isEvaluating=true; evaluateAnswer(val,true);}
 
-function normalize(s){return s.toLowerCase().replace(/[''`]/g,' ').replace(/[àáâãä]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[ç]/g,'c').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();}
+function normalize(s){return s.toLowerCase().replace(/[àáâãä]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/[ç]/g,'c').replace(/[^a-z0-9\s]/g,'').trim();}
 function getTranslationsList(str){const res=[]; str.split(';').forEach(p=>{p.split('/').forEach(sub=>res.push(sub.trim().toLowerCase()));}); return res;}
 function containsTranslation(transcript,translations){const norm=normalize(transcript); const words=norm.split(/\s+/); for(let t of translations){if(words.includes(normalize(t)))return true; if(norm.includes(normalize(t)))return true;} return false;}
 
@@ -693,13 +685,12 @@ async function evaluateAnswer(ans, isDrill){
   let display; if(exerciseMode==='en')display=(w[2]==='verbo'?'To ':'')+w[1]; else display=w[1];
   const correct=containsTranslation(ans, getTranslationsList(w[3]));
   if(isDrill){
-    await showDrillFeedback(correct,w,display);
-    if(correct){ 
-        if (drillCurrentWord.counter < 3) drillCurrentWord.counter++; 
-        if(drillCurrentWord.counter >= 3) drill = drill.filter(d=>d!==drillCurrentWord); 
-    }
+    if(correct){ if(drillCurrentWord.counter < 3) drillCurrentWord.counter++; }
     else drillCurrentWord.counter = 0;
+    updateDrillDots();
     updateDrillCounterBadge();
+    await showDrillFeedback(correct,w,display);
+    if(correct && drillCurrentWord.counter >= 3){ drill = drill.filter(d=>d!==drillCurrentWord); updateDrillCounterBadge(); }
   }else{
     if(!correct){ const exists=drill.find(d=>d.word[0]===w[0]); if(!exists) drill.push({word:w,counter:0}); }
     if(correct) stats.correct++; else stats.wrong++;
