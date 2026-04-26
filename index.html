@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Vocabolario EN→IT · CL26042510</title>
+<title>Vocabolario EN→IT · CL26042609</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
@@ -253,15 +253,11 @@
   }
   .stop-circle-btn:active { transform: scale(0.94); }
 
-  .drill-counter-badge {
+  .badge-drill, .badge-srs {
     position: absolute;
-    top: 12px;
-    left: 12px;
     min-width: 36px;
     height: 36px;
     border-radius: 40px;
-    background: var(--error);
-    border: 2px solid var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -272,6 +268,19 @@
     z-index: 12;
     padding: 0 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .badge-drill {
+    top: 12px;
+    left: 12px;
+    background: var(--error);
+    border: 2px solid var(--accent);
+  }
+  .badge-srs {
+    bottom: 12px;
+    left: 12px;
+    background: #0a2a2a;
+    border: 2px solid var(--accent2);
+    color: var(--accent2);
   }
 
   .feedback {
@@ -447,18 +456,18 @@
 <div class="container">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 6px;">
     <span id="mode-label" style="font-weight:600;font-size:0.9rem;color:var(--accent);">EN → IT</span>
-    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042510</span>
+    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042609</span>
   </div>
 
   <!-- SETUP -->
   <div id="screen-setup" class="screen active">
     <div class="card">
       <div class="input-group">
-        <label style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;color:var(--text);">DA QUALE LEMMA INIZIARE? (1-1000)</label>
+        <label style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;color:var(--text);text-align:center;display:block;">DA QUALE LEMMA INIZIARE? (1-1000)</label>
         <input type="number" id="input-S" min="1" max="1000" value="1">
       </div>
       <div class="input-group">
-        <label style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;color:var(--text);">QUANTE PAROLE TRADURRE? (1-50)</label>
+        <label style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;color:var(--text);text-align:center;display:block;">QUANTE PAROLE TRADURRE? (1-50)</label>
         <input type="number" id="input-W" min="1" max="50" value="10">
       </div>
       <div id="setup-error" class="error-msg"></div>
@@ -493,9 +502,9 @@
     <div class="mic-area" id="mic-area">
       <button class="pause-btn" id="pause-btn" onclick="togglePause()" title="Pausa">⏸️</button>
       <button class="stop-circle-btn" id="stop-circle-btn" onclick="stopExercise()" title="Stop">⏹️</button>
-      <div class="drill-counter-badge" id="drill-counter-badge" style="display:none;">0</div>
-      <div class="drill-counter-badge" id="srs-badge" style="display:none;top:auto;bottom:12px;background:#0a2a2a;border-color:var(--accent2);color:var(--accent2);">0</div>
-      <div class="mic-icon" id="mic-icon" ontouchstart="handlePushStart(event)" ontouchend="handlePushEnd(event)" onmousedown="handlePushStart(event)" onmouseup="handlePushEnd(event)">🎤</div>
+      <div class="badge-drill" id="drill-counter-badge" style="display:none;">0</div>
+      <div class="badge-srs" id="srs-badge" style="display:none;">0</div>
+      <div class="mic-icon" id="mic-icon" onpointerdown="handlePushStart(event)" onpointerup="handlePushEnd(event)" onpointercancel="handlePushEnd(event)">🎤</div>
     </div>
 
     <div class="manual-input" id="manual-input">
@@ -530,9 +539,9 @@
     <div class="mic-area" id="drill-mic-area">
       <button class="pause-btn" id="drill-pause-btn" onclick="togglePause()" title="Pausa">⏸️</button>
       <button class="stop-circle-btn" id="drill-stop-circle-btn" onclick="stopExercise()" title="Stop">⏹️</button>
-      <div class="drill-counter-badge" id="drill-counter-badge-drill" style="display:none;">0</div>
-      <div class="drill-counter-badge" id="srs-badge-drill" style="display:none;top:auto;bottom:12px;background:#0a2a2a;border-color:var(--accent2);color:var(--accent2);">0</div>
-      <div class="mic-icon" id="drill-mic-icon" ontouchstart="handleDrillPushStart(event)" ontouchend="handleDrillPushEnd(event)" onmousedown="handleDrillPushStart(event)" onmouseup="handleDrillPushEnd(event)">🎤</div>
+      <div class="badge-drill" id="drill-counter-badge-drill" style="display:none;">0</div>
+      <div class="badge-srs" id="srs-badge-drill" style="display:none;">0</div>
+      <div class="mic-icon" id="drill-mic-icon" onpointerdown="handleDrillPushStart(event)" onpointerup="handleDrillPushEnd(event)" onpointercancel="handleDrillPushEnd(event)">🎤</div>
     </div>
     <div class="manual-input" id="drill-manual-input">
       <input type="text" id="drill-manual-text" placeholder="Scrivi la traduzione...">
@@ -544,7 +553,7 @@
   <!-- END SCREEN -->
   <div id="screen-end" class="screen">
     <div style="background:rgba(232,255,71,0.08);border:1px solid var(--accent);border-radius:16px;padding:12px 16px;text-align:center;">
-      <span id="end-params" style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.05em;">S=<span id="end-S"></span> W=<span id="end-W"></span></span>
+      <span style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.05em;">S=<span id="end-S"></span> &nbsp;&nbsp;&nbsp; W=<span id="end-W"></span></span>
     </div>
     <div class="card">
       <div class="card-label">Risultati</div>
@@ -601,7 +610,7 @@ let pendingEvalTimeout = null;
 let srsWords = [];       // [{wordId:number, level:1-3, nextSession:number}]
 let sessionCount = 0;    // incrementa ad ogni fine sessione
 let Wbase = 10;          // W base per progressione
-let _srsSlotCount = 0;   // quante parole SRS sono nella sessione corrente
+let _srsSlotCount = 0;   // parole SRS inserite nella sessione corrente
 
 // PUSH-TO-TALK state
 let isHolding = false;
@@ -642,7 +651,7 @@ function speakAsyncLang(text,lang){
     else if(lang==='en-US'){ const v=getBestEnglishVoice(); if(v) u.voice=v; }
     u.onend=finish; u.onerror=finish;
     window.speechSynthesis.speak(u);
-    setTimeout(finish, Math.max(2000,text.length*90));
+    setTimeout(finish,Math.max(2000,text.length*90));
   });
 }
 
@@ -656,7 +665,7 @@ function buildCatScreen(){const list=document.getElementById('cat-list'); list.i
 function toggleCat(cat,el){if(selectedCats.has(cat)){if(selectedCats.size<=1)return; selectedCats.delete(cat); el.classList.remove('selected'); el.querySelector('.cat-toggle-check').textContent='';}else{selectedCats.add(cat); el.classList.add('selected'); el.querySelector('.cat-toggle-check').textContent='✓';}}
 
 // ── SRS: Ripasso ──────────────────────────────────────────────────────────────
-const SRS_INTERVALS=[0,1,3,7]; // intervalli sessioni per livello 0,1,2,3
+const SRS_INTERVALS=[0,1,3,7];
 function updateSrsBadge(){
   const wordMap=new Map(RAW.map(w=>[w[0],w]));
   const active=srsWords.filter(s=>{ const w=wordMap.get(s.wordId); return w&&selectedCats.has(w[2]); });
@@ -667,7 +676,6 @@ function updateSrsBadge(){
   });
 }
 function getSrsDue(){
-  // parole SRS con categoria attiva che scadono in questa sessione
   const wordMap=new Map(RAW.map(w=>[w[0],w]));
   return srsWords.filter(s=>{
     const w=wordMap.get(s.wordId);
@@ -675,7 +683,6 @@ function getSrsDue(){
   });
 }
 function pickSrsSlots(cap){
-  // slot bilanciati per livello, max cap totale
   const due=getSrsDue();
   if(due.length===0)return[];
   const byLevel={1:[],2:[],3:[]};
@@ -689,10 +696,9 @@ function pickSrsSlots(cap){
     idx++;
   }
   const wordMap=new Map(RAW.map(w=>[w[0],w]));
-  return result.map(s=>({rawWord:wordMap.get(s.wordId),wordId:s.wordId,level:s.level})).filter(x=>x.rawWord);
+  return result.map(s=>({rawWord:wordMap.get(s.wordId),wordId:s.wordId})).filter(x=>x.rawWord);
 }
 function addToSrs(wordId){
-  // evita duplicati: confronto numerico
   const id=Number(wordId);
   if(srsWords.find(s=>Number(s.wordId)===id))return;
   srsWords.push({wordId:id,level:1,nextSession:sessionCount+SRS_INTERVALS[1]});
@@ -708,7 +714,6 @@ function promoteSrs(wordId){
   saveLastParams(); updateSrsBadge();
 }
 function demoteSrs(wordId){
-  // sbagliata in sessione normale: non cambia livello, posticipa di 1
   const id=Number(wordId);
   const e=srsWords.find(s=>Number(s.wordId)===id);
   if(!e)return;
@@ -726,16 +731,12 @@ function confirmCats(){
   const cap=Math.max(1,Math.round(base.length*0.25));
   const srsSlots=pickSrsSlots(cap);
   _srsSlotCount=srsSlots.length;
-  // words contiene solo array raw [id,en,cat,it] — le SRS vengono inserite come tali
-  const srsRaw=srsSlots.map(x=>x.rawWord);
   const srsIds=new Set(srsSlots.map(x=>Number(x.wordId)));
-  // mappa posizione→isSrs costruita DOPO il merge
-  const merged=shuffle([...base,...srsRaw]);
-  words=merged;
-  // mappa wordId→isSrs per evaluateAnswer
+  const srsRaw=srsSlots.map(x=>x.rawWord);
+  words=shuffle([...base,...srsRaw]);
   window._srsWordIds=srsIds;
-  W=base.length; // W = parole normali, srsSlotCount separato
-  currentIdx=0; drill=[]; stats={correct:0,wrong:0}; retryCount=0; drillQueue=[];
+  W=base.length;  // W = parole normali, _srsSlotCount = parole ripasso
+  currentIdx=0; drill=[]; drillQueue=[]; stats={correct:0,wrong:0}; retryCount=0;
   updateDrillCounterBadge(); updateSrsBadge(); saveProgress();
   showScreen('screen-exercise'); showWord();
 }
@@ -793,15 +794,15 @@ function _doEvaluate(isDrillMode){
   if(currentTranscript.trim().length>0){
     evaluateAnswer(currentTranscript.trim().toLowerCase(),isDrillMode);
   } else {
-    retryCount++;
-    showToast(`Nessuna parola. Tentativo ${retryCount}`);
+    retryCount=0;
+    showToast('Nessuna parola riconosciuta');
     if(!isDrillMode) setTimeout(()=>showWord(),1500);
     else setTimeout(()=>{ if(drillCurrentWord) startPushListening(true); },1500);
   }
 }
-function handlePushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; currentTranscript=''; if(currentRecognition) _killRecognition(); startPushListening(false);}
+function handlePushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; currentTranscript=''; if(navigator.vibrate) navigator.vibrate([100,50,100]); if(currentRecognition) _killRecognition(); startPushListening(false);}
 function handlePushEnd(e){ e.preventDefault(); stopPushListening(false);}
-function handleDrillPushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; currentTranscript=''; if(currentRecognition) _killRecognition(); startPushListening(true);}
+function handleDrillPushStart(e){ e.preventDefault(); if(isEvaluating) return; isHolding=true; currentTranscript=''; if(navigator.vibrate) navigator.vibrate([100,50,100]); if(currentRecognition) _killRecognition(); startPushListening(true);}
 function handleDrillPushEnd(e){ e.preventDefault(); stopPushListening(true);}
 
 function submitManual(){if(isPaused){showToast('Pausa');return;} const val=document.getElementById('manual-text').value.trim().toLowerCase(); if(!val)return; document.getElementById('manual-text').value=''; if(currentRecognition)stopPushListening(false); if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); isEvaluating=true; evaluateAnswer(val,false);}
@@ -841,11 +842,8 @@ async function evaluateAnswer(ans, isDrill){
       if(isSrsWord) promoteSrs(w[0]);
     } else {
       stats.wrong++;
-      if(isSrsWord){
-        demoteSrs(w[0]);
-      } else {
-        addToSrs(w[0]); // parola normale sbagliata → entra in SRS
-      }
+      if(isSrsWord){ demoteSrs(w[0]); }
+      else { addToSrs(w[0]); }
       const exists=drill.find(d=>d.word[0]===w[0]);
       if(!exists) drill.push({word:w,counter:0});
     }
@@ -879,8 +877,11 @@ async function showDrillFeedback(correct,word,display){
   await sleep(2000); isEvaluating=false; nextDrillWord();
 }
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-function saveProgress(){localStorage.setItem('vocabProgress',JSON.stringify({S,W,currentIdx,stats,drill:drill.map(d=>({wordId:d.word[0],counter:d.counter})),wordIds:words.map(w=>w[0]),exerciseMode,selectedCats:Array.from(selectedCats),srsWords,sessionCount,Wbase}));}
-function loadProgress(){const saved=localStorage.getItem('vocabProgress'); if(!saved){showToast('Nessun salvataggio'); return false;} try{const p=JSON.parse(saved); S=p.S;W=p.W;stats=p.stats; exerciseMode=p.exerciseMode; setMode(exerciseMode); selectedCats=new Set(p.selectedCats); const wordMap=new Map(RAW.map(w=>[w[0],w])); words=p.wordIds.map(id=>wordMap.get(id)).filter(w=>w); if(words.length===0)return false; currentIdx=p.currentIdx; drill=p.drill.map(d=>({word:wordMap.get(d.wordId),counter:d.counter})).filter(d=>d.word); updateDrillCounterBadge(); showScreen('screen-exercise'); showWord(); showToast('Ripristinato'); return true;}catch(e){showToast('Errore'); return false;}}
+function saveProgress(){localStorage.setItem('vocabProgress',JSON.stringify({S,W,currentIdx,stats,drill:drill.map(d=>({wordId:d.word[0],counter:d.counter})),wordIds:words.map(w=>w[0]),exerciseMode,selectedCats:Array.from(selectedCats),srsWords,sessionCount,Wbase,srsSlotIds:Array.from(window._srsWordIds||[])}));}
+function loadProgress(){const saved=localStorage.getItem('vocabProgress'); if(!saved){showToast('Nessun salvataggio'); return false;} try{const p=JSON.parse(saved); S=p.S;W=p.W;stats=p.stats; exerciseMode=p.exerciseMode; setMode(exerciseMode); selectedCats=new Set(p.selectedCats); const wordMap=new Map(RAW.map(w=>[w[0],w])); words=p.wordIds.map(id=>wordMap.get(id)).filter(w=>w); if(words.length===0)return false; currentIdx=p.currentIdx; drill=p.drill.map(d=>({word:wordMap.get(d.wordId),counter:d.counter})).filter(d=>d.word);
+    window._srsWordIds=new Set((p.srsSlotIds||[]).map(Number));
+    _srsSlotCount=(p.srsSlotIds||[]).length;
+    updateDrillCounterBadge(); updateSrsBadge(); showScreen('screen-exercise'); showWord(); showToast('Ripristinato'); return true;}catch(e){showToast('Errore'); return false;}}
 function updateDrillDots(){const dots=document.getElementById('drill-dots'); if(!dots||!drillCurrentWord)return; dots.innerHTML=''; for(let i=0;i<3;i++){const d=document.createElement('div'); if(i<drillCurrentWord.counter) d.className='drill-dot filled'; else if(i===drillCurrentWord.counter) d.className='drill-dot current'; else d.className='drill-dot'; dots.appendChild(d);}}
 function nextWord(){currentIdx++; if(currentIdx>=words.length){if(drill.length>0)startDrill(); else showEnd();}else showWord();}
 function nextDrillWord(){
@@ -897,14 +898,14 @@ function nextDrillWord(){
   document.getElementById('drill-manual-text').value='';
   setTimeout(async()=>{const spoken=exerciseMode==='en'?((w[2]==='verbo'?'To ':'')+w[1]):w[3].split(';')[0].trim().split('/')[0].trim(); await speakAsyncLang(spoken,exerciseMode==='en'?'en-US':'it-IT');},300);
 }
-function showWord(){if(isPaused)return; isEvaluating=false; const w=words[currentIdx]; document.getElementById('word-category').textContent=w[2].charAt(0).toUpperCase()+w[2].slice(1); if(exerciseMode==='en')setWordText('word-english',(w[2]==='verbo'?'To ':'')+w[1]); else setWordText('word-english',w[3].split(';')[0].trim().split('/')[0].trim()); const pct=(currentIdx/W)*100; document.getElementById('progress-fill').style.width=pct+'%'; const _srsStr=_srsSlotCount>0?'+'+_srsSlotCount:'+0'; document.getElementById('ex-progress-label').textContent=`PAROLA ${currentIdx+1} DI ${W}${_srsStr} DA ${S}`; document.getElementById('ex-progress-label').style.color='var(--accent)'; document.getElementById('feedback').className='feedback'; document.getElementById('manual-text').value=''; setTimeout(async()=>{const spoken=exerciseMode==='en'?((w[2]==='verbo'?'To ':'')+w[1]):w[3].split(';')[0].trim().split('/')[0].trim(); await speakAsyncLang(spoken,exerciseMode==='en'?'en-US':'it-IT');},300);}
+function showWord(){if(isPaused)return; isEvaluating=false; retryCount=0; const w=words[currentIdx]; document.getElementById('word-category').textContent=w[2].charAt(0).toUpperCase()+w[2].slice(1); if(exerciseMode==='en')setWordText('word-english',(w[2]==='verbo'?'To ':'')+w[1]); else setWordText('word-english',w[3].split(';')[0].trim().split('/')[0].trim()); const pct=(currentIdx/W)*100; document.getElementById('progress-fill').style.width=pct+'%'; document.getElementById('ex-progress-label').textContent=`Parola ${currentIdx+1} di ${W} da ${S}`; document.getElementById('feedback').className='feedback'; document.getElementById('manual-text').value=''; setTimeout(async()=>{const spoken=exerciseMode==='en'?((w[2]==='verbo'?'To ':'')+w[1]):w[3].split(';')[0].trim().split('/')[0].trim(); await speakAsyncLang(spoken,exerciseMode==='en'?'en-US':'it-IT');},300);}
 function startDrill(){if(drill.length===0){showEnd();return;} document.getElementById('drill-confirm-count').textContent=drill.length; showScreen('screen-drill-confirm'); speakAsyncLang(`Vuoi consolidare le ${drill.length} parole sbagliate?`,'it-IT');}
 function confirmDrill(yes){if(yes){drillQueue=[];showScreen('screen-drill');nextDrillWord();}else showEnd();}
 function showEnd(){if(currentRecognition)try{currentRecognition.stop()}catch(e){} currentRecognition=null; if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); const total=stats.correct+stats.wrong; const pct=total>0?Math.round((stats.correct/total)*100):0; document.getElementById('stat-correct').textContent=stats.correct; document.getElementById('stat-wrong').textContent=stats.wrong; document.getElementById('stat-total').textContent=total; document.getElementById('stat-pct').textContent=pct+'%'; const _eS=document.getElementById('end-S'); const _eW=document.getElementById('end-W'); if(_eS)_eS.textContent=S; if(_eW)_eW.textContent=W; showScreen('screen-end');}
 function repeatSame(){
   incrSessionCount();
   saveLastParams();
-  showScreen('screen-exercise'); confirmCats();
+  confirmCats();
 }
 function repeatNew(){
   incrSessionCount();
@@ -934,7 +935,7 @@ function terminateExercise(){
   document.getElementById('term-S').textContent = S;
   showScreen('screen-terminate');
 }
-function stopExercise(){if(currentRecognition)try{currentRecognition.stop()}catch(e){} currentRecognition=null; if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); showEnd();}
+function stopExercise(){if(currentRecognition)try{currentRecognition.stop()}catch(e){} currentRecognition=null; if(pendingEvalTimeout){clearTimeout(pendingEvalTimeout);pendingEvalTimeout=null;} showEnd();}
 function togglePause(){isPaused=!isPaused; const btns=document.querySelectorAll('.pause-btn'); btns.forEach(btn=>{if(isPaused){btn.textContent='▶️'; btn.classList.add('paused');}else{btn.textContent='⏸️'; btn.classList.remove('paused');}}); if(isPaused){if(currentRecognition)stopPushListening(false); if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); showToast('Pausa');}else{showToast('Ripresa'); if(words[currentIdx])setTimeout(()=>showWord(),300);}}
 window.onload=function(){
     loadLastParams();
