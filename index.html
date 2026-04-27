@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Vocabolario EN→IT · CL26042611</title>
+<title>Vocabolario EN→IT · CL26042715</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
@@ -357,7 +357,9 @@
     width: 100%;
     text-transform: uppercase;
     text-align: center;
+    transition: all 0.1s;
   }
+  .speak-btn:active { transform: scale(0.97); }
   .btn-row {
     display: flex;
     flex-direction: column;
@@ -446,8 +448,8 @@
 <body>
 <div class="container">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 6px;">
-    <span id="mode-label" style="font-weight:600;font-size:0.9rem;color:var(--accent);">EN → IT</span>
-    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042611</span>
+    <span id="mode-label" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;color:var(--accent);">🇬🇧 EN → IT 🇮🇹</span>
+    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042715</span>
   </div>
 
   <!-- SETUP -->
@@ -464,8 +466,8 @@
       <div id="setup-error" class="error-msg"></div>
     </div>
     <div style="display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-      <button id="btn-mode-en" onclick="setMode('en')" style="flex:1;padding:12px;background:var(--accent);color:#000;font-weight:700;border:none;">EN → IT</button>
-      <button id="btn-mode-it" onclick="setMode('it')" style="flex:1;padding:12px;background:var(--surface);color:#888;font-weight:700;border:none;">IT → EN</button>
+      <button id="btn-mode-en" onclick="setMode('en')" style="flex:1;padding:12px;background:var(--accent);color:#000;font-weight:700;border:none;">🇬🇧 EN → IT 🇮🇹</button>
+      <button id="btn-mode-it" onclick="setMode('it')" style="flex:1;padding:12px;background:var(--surface);color:#888;font-weight:700;border:none;">🇮🇹 IT → EN 🇬🇧</button>
     </div>
     <button class="btn btn-primary" onclick="startExercise()">INIZIA ESERCIZIO →</button>
     <button class="btn btn-secondary" onclick="loadProgress()">↻ RIPRENDI SESSIONE INTERROTTA</button>
@@ -597,12 +599,11 @@ let isPaused = false;
 let retryCount = 0;
 let bestItalianVoice = null, bestEnglishVoice = null;
 let pendingEvalTimeout = null;
-let srsWords = [];       // [{wordId:number, level:1-3, nextSession:number}]
-let sessionCount = 0;    // incrementa ad ogni fine sessione
-let Wbase = 10;          // W base per progressione
-let _srsSlotCount = 0;   // quante parole SRS sono nella sessione corrente
+let srsWords = [];
+let sessionCount = 0;
+let Wbase = 10;
+let _srsSlotCount = 0;
 
-// PUSH-TO-TALK state
 let isHolding = false;
 let currentTranscript = '';
 
@@ -647,27 +648,24 @@ function speakAsyncLang(text,lang){
 
 function getWords(s,w){const eligible=[]; for(let i=s-1;i<RAW.length&&eligible.length<w*3;i++){if(selectedCats.has(RAW[i][2]))eligible.push(RAW[i]);} return shuffle(eligible.slice(0,w));}
 function shuffle(arr){let a=[...arr]; for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
-function setMode(mode){exerciseMode=mode; document.getElementById('mode-label').textContent=mode==='en'?'EN → IT':'IT → EN'; const btnEn=document.getElementById('btn-mode-en'),btnIt=document.getElementById('btn-mode-it'); if(mode==='en'){btnEn.style.background='var(--accent)';btnEn.style.color='#000';btnIt.style.background='var(--surface)';btnIt.style.color='#888';}else{btnIt.style.background='var(--accent)';btnIt.style.color='#000';btnEn.style.background='var(--surface)';btnEn.style.color='#888';}}
+function setMode(mode){exerciseMode=mode; document.getElementById('mode-label').textContent=mode==='en'?'🇬🇧 EN → IT 🇮🇹':'🇮🇹 IT → EN 🇬🇧'; const btnEn=document.getElementById('btn-mode-en'),btnIt=document.getElementById('btn-mode-it'); if(mode==='en'){btnEn.style.background='var(--accent)';btnEn.style.color='#000';btnIt.style.background='var(--surface)';btnIt.style.color='#888';}else{btnIt.style.background='var(--accent)';btnIt.style.color='#000';btnEn.style.background='var(--surface)';btnEn.style.color='#888';}}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active');}
 function startExercise(){const sVal=parseInt(document.getElementById('input-S').value); const wVal=parseInt(document.getElementById('input-W').value); const err=document.getElementById('setup-error'); if(!sVal||sVal<1||sVal>1000){err.textContent='S (1–1000)';err.classList.add('show');return;} if(!wVal||wVal<1||wVal>50){err.textContent='W (1–50)';err.classList.add('show');return;} err.classList.remove('show'); S=sVal; W=wVal; Wbase=W; sessionCount=0; saveLastParams(); buildCatScreen(); showScreen('screen-cats');}
 const ALL_CATS=['aggettivo','articolo','aux','avverbio','congiunzione','numero','particella','preposizione','pronome','sostantivo','verbo'];
 function buildCatScreen(){const list=document.getElementById('cat-list'); list.innerHTML=''; ALL_CATS.sort().forEach(cat=>{const isOn=selectedCats.has(cat); const div=document.createElement('div'); div.className='cat-toggle'+(isOn?' selected':''); div.dataset.cat=cat; div.innerHTML=`<span class="cat-toggle-label">${cat}</span><div class="cat-toggle-check">${isOn?'✓':''}</div>`; div.onclick=()=>toggleCat(cat,div); list.appendChild(div);});}
 function toggleCat(cat,el){if(selectedCats.has(cat)){if(selectedCats.size<=1)return; selectedCats.delete(cat); el.classList.remove('selected'); el.querySelector('.cat-toggle-check').textContent='';}else{selectedCats.add(cat); el.classList.add('selected'); el.querySelector('.cat-toggle-check').textContent='✓';}}
 
-// ── SRS: Ripasso ──────────────────────────────────────────────────────────────
-const SRS_INTERVALS=[0,1,3,7]; // intervalli sessioni per livello 0,1,2,3
+const SRS_INTERVALS=[0,1,3,7];
 function updateSrsBadge(){
-  // Il badge mostra le Parole Ripasso della sessione corrente (TPR):
-  // quante parole SRS restano ancora da completare in questa sessione.
-  const tpr=_srsSlotCount>0?_srsSlotCount:0;
+  // Contatore Ripasso: totale Parole Ripasso attive nel database SRS
+  const total=srsWords.length;
   ['srs-badge','srs-badge-drill'].forEach(id=>{
     const b=document.getElementById(id); if(!b)return;
-    if(tpr>0){b.style.display='flex';b.textContent=tpr;}
+    if(total>0){b.style.display='flex';b.textContent=total;}
     else b.style.display='none';
   });
 }
 function getSrsDue(){
-  // parole SRS con categoria attiva che scadono in questa sessione
   const wordMap=new Map(RAW.map(w=>[w[0],w]));
   return srsWords.filter(s=>{
     const w=wordMap.get(s.wordId);
@@ -675,7 +673,6 @@ function getSrsDue(){
   });
 }
 function pickSrsSlots(cap){
-  // slot bilanciati per livello, max cap totale
   const due=getSrsDue();
   if(due.length===0)return[];
   const byLevel={1:[],2:[],3:[]};
@@ -692,7 +689,6 @@ function pickSrsSlots(cap){
   return result.map(s=>({rawWord:wordMap.get(s.wordId),wordId:s.wordId,level:s.level})).filter(x=>x.rawWord);
 }
 function addToSrs(wordId){
-  // evita duplicati: confronto numerico
   const id=Number(wordId);
   if(srsWords.find(s=>Number(s.wordId)===id))return;
   srsWords.push({wordId:id,level:1,nextSession:sessionCount+SRS_INTERVALS[1]});
@@ -703,39 +699,36 @@ function promoteSrs(wordId){
   const e=srsWords.find(s=>Number(s.wordId)===id);
   if(!e)return;
   e.level++;
-  if(e.level>=4) srsWords=srsWords.filter(s=>Number(s.wordId)!==id);
-  else e.nextSession=sessionCount+SRS_INTERVALS[e.level];
-  if(_srsSlotCount>0) _srsSlotCount--;
+  if(e.level>=4){
+    // Raggiunto livello 4: ridiventa Parola Normale, esce da SRS
+    srsWords=srsWords.filter(s=>Number(s.wordId)!==id);
+    if(_srsSlotCount>0) _srsSlotCount--;
+  } else {
+    e.nextSession=sessionCount+SRS_INTERVALS[e.level];
+  }
   saveLastParams(); updateSrsBadge();
 }
 function demoteSrs(wordId){
-  // sbagliata in sessione normale: non cambia livello, posticipa di 1
-  const id=Number(wordId);
-  const e=srsWords.find(s=>Number(s.wordId)===id);
-  if(!e)return;
-  e.nextSession=sessionCount+1;
+  // Parola Ripasso sbagliata: rimane nello stesso livello SRS,
+  // entra in Drill (gestito da evaluateAnswer), non cambia nextSession
   saveLastParams(); updateSrsBadge();
 }
 function incrSessionCount(){
   sessionCount++;
   saveLastParams();
 }
-// ─────────────────────────────────────────────────────────────────────────────
 function confirmCats(){
   const base=getWords(S,W);
   if(base.length===0){alert('Nessuna parola con queste categorie.');return;}
   const cap=Math.max(1,Math.round(base.length*0.25));
   const srsSlots=pickSrsSlots(cap);
   _srsSlotCount=srsSlots.length;
-  // words contiene solo array raw [id,en,cat,it] — le SRS vengono inserite come tali
   const srsRaw=srsSlots.map(x=>x.rawWord);
   const srsIds=new Set(srsSlots.map(x=>Number(x.wordId)));
-  // mappa posizione→isSrs costruita DOPO il merge
   const merged=shuffle([...base,...srsRaw]);
   words=merged;
-  // mappa wordId→isSrs per evaluateAnswer
   window._srsWordIds=srsIds;
-  W=base.length; // W = parole normali, srsSlotCount separato
+  W=base.length;
   currentIdx=0; drill=[]; stats={correct:0,wrong:0}; retryCount=0; drillQueue=[];
   updateDrillCounterBadge(); updateSrsBadge(); saveProgress();
   showScreen('screen-exercise'); showWord();
@@ -845,7 +838,7 @@ async function evaluateAnswer(ans, isDrill){
       if(isSrsWord){
         demoteSrs(w[0]);
       } else {
-        addToSrs(w[0]); // parola normale sbagliata → entra in SRS
+        addToSrs(w[0]);
       }
       const exists=drill.find(d=>d.word[0]===w[0]);
       if(!exists) drill.push({word:w,counter:0});
@@ -936,7 +929,7 @@ function terminateExercise(){
   showScreen('screen-terminate');
 }
 function stopExercise(){if(currentRecognition)try{currentRecognition.stop()}catch(e){} currentRecognition=null; if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); showEnd();}
-function togglePause(){isPaused=!isPaused; const btns=document.querySelectorAll('.pause-btn'); btns.forEach(btn=>{if(isPaused){btn.textContent='▶️'; btn.classList.add('paused');}else{btn.textContent='⏸️'; btn.classList.remove('paused');}}); if(isPaused){if(currentRecognition)stopPushListening(false); if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); showToast('Pausa');}else{showToast('Ripresa'); if(words[currentIdx])setTimeout(()=>showWord(),300);}}
+function togglePause(){isPaused=!isPaused; const btns=document.querySelectorAll('.pause-btn'); btns.forEach(btn=>{if(isPaused){btn.textContent='▶️'; btn.classList.add('paused');}else{btn.textContent='⏸️'; btn.classList.remove('paused');}}); if(isPaused){if(currentRecognition)stopPushListening(false); if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); showToast('PAUSA');}else{showToast('RIPRESA'); if(words[currentIdx])setTimeout(()=>showWord(),300);}}
 window.onload=function(){
     loadLastParams();
     if(window.speechSynthesis){
