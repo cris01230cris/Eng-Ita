@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Vocabolario EN→IT · CL26042808</title>
+<title>Vocabolario EN→IT · CL26042818</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
@@ -174,14 +174,14 @@
   .mic-icon {
     width: 100%;
     max-width: 240px;
-    height: 180px;
-    border-radius: 90px;
+    height: 155px;
+    border-radius: 78px;
     background: var(--surface);
     border: 2px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.8rem;
+    font-size: 3.4rem;
     transition: all 0.05s ease;
     cursor: pointer;
     touch-action: manipulation;
@@ -285,12 +285,26 @@
     background: rgba(71, 255, 138, 0.1);
     border: 1px solid rgba(71, 255, 138, 0.4);
     color: var(--success);
+    animation: flashCorrect 0.5s ease-in-out 3;
   }
 
   .feedback.wrong {
     background: rgba(255, 71, 71, 0.1);
     border: 1px solid rgba(255, 71, 71, 0.4);
     color: var(--error);
+    animation: flashWrong 0.5s ease-in-out 3;
+  }
+
+  @keyframes flashCorrect {
+    0%   { background: rgba(71,255,138,0.10); box-shadow: none; }
+    50%  { background: rgba(71,255,138,0.40); box-shadow: 0 0 22px 4px rgba(71,255,138,0.6); }
+    100% { background: rgba(71,255,138,0.10); box-shadow: none; }
+  }
+
+  @keyframes flashWrong {
+    0%   { background: rgba(255,71,71,0.10); box-shadow: none; }
+    50%  { background: rgba(255,71,71,0.45); box-shadow: 0 0 22px 4px rgba(255,71,71,0.65); }
+    100% { background: rgba(255,71,71,0.10); box-shadow: none; }
   }
 
   .drill-dots {
@@ -481,7 +495,7 @@
 <div class="container">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 6px;">
     <span id="mode-label" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;color:var(--accent);">🇬🇧 EN → IT 🇮🇹</span>
-    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042808</span>
+    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042818</span>
   </div>
 
   <!-- SETUP -->
@@ -498,10 +512,10 @@
       <div id="setup-error" class="error-msg"></div>
     </div>
     <div style="display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-      <button id="btn-mode-en" onclick="setMode('en')" style="flex:1;padding:12px;background:var(--accent);color:#000;font-weight:700;border:none;">🇬🇧 EN → IT 🇮🇹</button>
-      <button id="btn-mode-it" onclick="setMode('it')" style="flex:1;padding:12px;background:var(--surface);color:#888;font-weight:700;border:none;">🇮🇹 IT → EN 🇬🇧</button>
+      <button id="btn-mode-en" onclick="setMode('en')" style="flex:1;padding:12px;background:var(--accent);color:#000;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;border:none;">🇬🇧 EN → IT 🇮🇹</button>
+      <button id="btn-mode-it" onclick="setMode('it')" style="flex:1;padding:12px;background:var(--surface);color:#888;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;border:none;">🇮🇹 IT → EN 🇬🇧</button>
     </div>
-    <button class="btn btn-primary" onclick="startExercise()">INIZIA ESERCIZIO →</button>
+    <button class="btn btn-primary" onclick="startExercise()">🚀 INIZIA ESERCIZIO 🚀</button>
     <button class="btn btn-secondary" onclick="loadProgress()">↻ RIPRENDI SESSIONE INTERROTTA</button>
     <button class="btn btn-secondary" onclick="showResetConfirm()">AZZERARE CONTATORE E PAROLE RIPASSO?</button>
   </div>
@@ -509,7 +523,7 @@
   <!-- CATEGORIE -->
   <div id="screen-cats" class="screen">
     <div class="card"><div id="cat-list" style="display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;"></div></div>
-    <button class="btn btn-primary" onclick="confirmCats()">CONFERMA →</button>
+    <button class="btn btn-primary" onclick="confirmCats()">✅ CONFERMA ✅</button>
     <button class="btn btn-secondary" onclick="showScreen('screen-setup')">← INDIETRO</button>
   </div>
 
@@ -521,7 +535,7 @@
       <div style="margin-top:8px;">
         <div class="word-category" id="word-category"></div>
         <div class="word-english" id="word-english" onclick="toggleWordVisibility()"></div>
-        <button class="speak-btn" onclick="speakCurrentWord()">🔊 RIASCOLTA</button>
+        <button class="speak-btn" onclick="speakCurrentWord()">👂 RIASCOLTA 🔊</button>
       </div>
     </div>
 
@@ -535,7 +549,7 @@
 
     <div class="manual-input" id="manual-input">
       <input type="text" id="manual-text" placeholder="Scrivi la traduzione..." autocomplete="off" spellcheck="false" enterkeyhint="done">
-      <button class="btn btn-primary" onclick="submitManual()" style="color:#000;">CONFERMA</button>
+      <button class="btn btn-primary" onclick="submitManual()" style="color:#000;">✅ CONFERMA ✅</button>
     </div>
     <div class="feedback" id="feedback"><div class="feedback-icon" id="feedback-icon"></div><div class="feedback-text" id="feedback-text"></div></div>
   </div>
@@ -559,7 +573,7 @@
       <div class="card-label">Drill · Parole sbagliate</div>
       <div class="word-category" id="drill-category"></div>
       <div class="word-english" id="drill-word" onclick="toggleWordVisibility()"></div>
-      <button class="speak-btn" onclick="speakDrillWord()">🔊 RIASCOLTA</button>
+      <button class="speak-btn" onclick="speakDrillWord()">👂 RIASCOLTA 🔊</button>
       <div class="drill-dots" id="drill-dots"></div>
     </div>
     <div class="mic-area" id="drill-mic-area">
@@ -571,7 +585,7 @@
     </div>
     <div class="manual-input" id="drill-manual-input">
       <input type="text" id="drill-manual-text" placeholder="Scrivi la traduzione...">
-      <button class="btn btn-primary" onclick="submitDrillManual()" style="color:#000;">CONFERMA</button>
+      <button class="btn btn-primary" onclick="submitDrillManual()" style="color:#000;">✅ CONFERMA ✅</button>
     </div>
     <div class="feedback" id="drill-feedback"><div class="feedback-icon" id="drill-feedback-icon"></div><div class="feedback-text" id="drill-feedback-text"></div></div>
   </div>
@@ -590,10 +604,10 @@
         <div class="stat-box"><div class="stat-value" id="stat-pct">0%</div><div class="stat-label">SCORE</div></div>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="repeatSame()">↻ STESSE PAROLE</button>
-    <button class="btn btn-secondary" onclick="repeatNew()">PAROLE NUOVE →</button>
-    <button class="btn btn-secondary" onclick="goHome()">← NUOVO ESERCIZIO</button>
-    <button class="btn btn-secondary" onclick="terminateExercise()">✕ TERMINA</button>
+    <button class="btn btn-primary" onclick="repeatSame()">🔁 STESSE PAROLE 🔁</button>
+    <button class="btn btn-secondary" onclick="repeatNew()">🆕 PAROLE NUOVE 🆕</button>
+    <button class="btn btn-secondary" onclick="goHome()">🏠 NUOVO ESERCIZIO 🏠</button>
+    <button class="btn btn-secondary" onclick="terminateExercise()">⛔ TERMINA ⛔</button>
   </div>
   <!-- TERMINATE SCREEN -->
   <div id="screen-terminate" class="screen">
@@ -757,7 +771,7 @@ function incrSessionCount(){
 function confirmCats(){
   const base=getWords(S,W);
   if(base.length===0){alert('Nessuna parola con queste categorie.');return;}
-  const cap=Math.max(1,Math.round(base.length*0.25));
+  const cap=Math.round(base.length*0.25);
   const srsSlots=pickSrsSlots(cap);
   _srsSlotCount=srsSlots.length;
   const srsRaw=srsSlots.map(x=>x.rawWord);
