@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Vocabolario EN→IT · CL26042818</title>
+<title>Vocabolario EN→IT · CL26042914</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
@@ -100,12 +100,15 @@
     border: 1px solid var(--border);
     border-radius: 14px;
     color: var(--text);
-    font-family: 'Space Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
-    padding: 12px;
+    font-weight: 600;
+    padding: 14px;
     width: 100%;
     outline: none;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
   .input-group input:focus {
@@ -137,9 +140,10 @@
   }
 
   .word-category {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--accent2);
     margin-bottom: 6px;
@@ -484,6 +488,16 @@
     cursor: pointer;
     transition: all 0.1s;
   }
+  @keyframes flagWave {
+    0%   { transform: rotate(0deg) scale(1); }
+    20%  { transform: rotate(-8deg) scale(1.1); }
+    40%  { transform: rotate(8deg) scale(1.1); }
+    60%  { transform: rotate(-5deg) scale(1.05); }
+    80%  { transform: rotate(5deg) scale(1.05); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+  #mode-label { display: inline-block; animation: flagWave 3s ease-in-out infinite; }
+  #btn-mode-en, #btn-mode-it { position: relative; }
   @keyframes fadeOut {
     0% { opacity: 1; }
     70% { opacity: 1; }
@@ -494,8 +508,8 @@
 <body>
 <div class="container">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 6px;">
-    <span id="mode-label" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;color:var(--accent);">🇬🇧 EN → IT 🇮🇹</span>
-    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042818</span>
+    <span id="mode-label" style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;color:var(--accent);">🇺🇸 EN → IT 🇮🇹</span>
+    <span style="font-size:0.7rem;color:var(--muted);font-family:'Space Mono';">CL26042914</span>
   </div>
 
   <!-- SETUP -->
@@ -512,11 +526,11 @@
       <div id="setup-error" class="error-msg"></div>
     </div>
     <div style="display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-      <button id="btn-mode-en" onclick="setMode('en')" style="flex:1;padding:12px;background:var(--accent);color:#000;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;border:none;">🇬🇧 EN → IT 🇮🇹</button>
-      <button id="btn-mode-it" onclick="setMode('it')" style="flex:1;padding:12px;background:var(--surface);color:#888;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;border:none;">🇮🇹 IT → EN 🇬🇧</button>
+      <button id="btn-mode-en" onclick="setMode('en')" style="flex:1;padding:12px;background:var(--accent);color:#000;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;border:none;">🇺🇸 EN → IT 🇮🇹</button>
+      <button id="btn-mode-it" onclick="setMode('it')" style="flex:1;padding:12px;background:var(--surface);color:#888;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-transform:uppercase;border:none;">🇮🇹 IT → EN 🇺🇸</button>
     </div>
     <button class="btn btn-primary" onclick="startExercise()">🚀 INIZIA ESERCIZIO 🚀</button>
-    <button class="btn btn-secondary" onclick="loadProgress()">↻ RIPRENDI SESSIONE INTERROTTA</button>
+    <button class="btn btn-secondary" onclick="loadProgress()">🔄 RIPRENDI SESSIONE INTERROTTA 🔄</button>
     <button class="btn btn-secondary" onclick="showResetConfirm()">AZZERARE CONTATORE E PAROLE RIPASSO?</button>
   </div>
 
@@ -524,7 +538,7 @@
   <div id="screen-cats" class="screen">
     <div class="card"><div id="cat-list" style="display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;"></div></div>
     <button class="btn btn-primary" onclick="confirmCats()">✅ CONFERMA ✅</button>
-    <button class="btn btn-secondary" onclick="showScreen('screen-setup')">← INDIETRO</button>
+    <button class="btn btn-secondary" onclick="showScreen('screen-setup')">◀️ INDIETRO ◀️</button>
   </div>
 
   <!-- ESERCIZIO PRINCIPALE -->
@@ -558,7 +572,7 @@
   <div id="screen-drill-confirm" class="screen">
     <div class="card">
       <div class="card-label">Drill · Parole sbagliate</div>
-      <p style="font-size:0.9rem;">Consolidare <span id="drill-confirm-count" style="color:var(--error);font-weight:700;"></span> parole?</p>
+      <p style="font-size:0.9rem;">Vuoi consolidare le <span id="drill-confirm-count" style="color:var(--error);font-weight:700;"></span> parole sbagliate?</p>
       <p style="font-size:0.7rem;">3 risposte corrette di fila per eliminare la parola.</p>
     </div>
     <div class="btn-row">
@@ -703,7 +717,7 @@ function speakAsyncLang(text,lang){
 
 function getWords(s,w){const eligible=[]; for(let i=s-1;i<RAW.length&&eligible.length<w*3;i++){if(selectedCats.has(RAW[i][2]))eligible.push(RAW[i]);} return shuffle(eligible.slice(0,w));}
 function shuffle(arr){let a=[...arr]; for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
-function setMode(mode){exerciseMode=mode; document.getElementById('mode-label').textContent=mode==='en'?'🇬🇧 EN → IT 🇮🇹':'🇮🇹 IT → EN 🇬🇧'; const btnEn=document.getElementById('btn-mode-en'),btnIt=document.getElementById('btn-mode-it'); if(mode==='en'){btnEn.style.background='var(--accent)';btnEn.style.color='#000';btnIt.style.background='var(--surface)';btnIt.style.color='#888';}else{btnIt.style.background='var(--accent)';btnIt.style.color='#000';btnEn.style.background='var(--surface)';btnEn.style.color='#888';}}
+function setMode(mode){exerciseMode=mode; document.getElementById('mode-label').textContent=mode==='en'?'🇺🇸 EN → IT 🇮🇹':'🇮🇹 IT → EN 🇺🇸'; const btnEn=document.getElementById('btn-mode-en'),btnIt=document.getElementById('btn-mode-it'); if(mode==='en'){btnEn.style.background='var(--accent)';btnEn.style.color='#000';btnIt.style.background='var(--surface)';btnIt.style.color='#888';}else{btnIt.style.background='var(--accent)';btnIt.style.color='#000';btnEn.style.background='var(--surface)';btnEn.style.color='#888';}}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active');}
 function startExercise(){const sVal=parseInt(document.getElementById('input-S').value); const wVal=parseInt(document.getElementById('input-W').value); const err=document.getElementById('setup-error'); if(!sVal||sVal<1||sVal>1000){err.textContent='S (1–1000)';err.classList.add('show');return;} if(!wVal||wVal<1||wVal>50){err.textContent='W (1–50)';err.classList.add('show');return;} err.classList.remove('show'); S=sVal; W=wVal; Wbase=W; sessionCount=0; saveLastParams(); buildCatScreen(); showScreen('screen-cats');}
 const ALL_CATS=['aggettivo','articolo','aux','avverbio','congiunzione','numero','particella','preposizione','pronome','sostantivo','verbo'];
@@ -726,19 +740,53 @@ function getSrsDue(){
     return w&&selectedCats.has(w[2])&&sessionCount>=s.nextSession;
   });
 }
+// Calcola quante slot SRS per livello rispettando cap=25% di W e proporzioni 40/35/25
 function pickSrsSlots(cap){
   const due=getSrsDue();
   if(due.length===0)return[];
   const byLevel={1:[],2:[],3:[]};
-  due.forEach(s=>{if(byLevel[s.level])byLevel[s.level].push(s);});
-  const levels=Object.keys(byLevel).filter(l=>byLevel[l].length>0);
-  const result=[];
-  let idx=0;
-  while(result.length<cap&&result.length<due.length){
-    const lv=levels[idx%levels.length];
-    if(byLevel[lv].length>0)result.push(byLevel[lv].shift());
-    idx++;
+  due.forEach(s=>{if(byLevel[s.level])byLevel[s.level].push(shuffle([...byLevel[s.level]]));});
+  // riempi byLevel con shuffled
+  [1,2,3].forEach(l=>{ byLevel[l]=shuffle(due.filter(s=>s.level===l)); });
+
+  const avail={1:byLevel[1].length,2:byLevel[2].length,3:byLevel[3].length};
+  // target percentuali base: l1=40%, l2=35%, l3=25%
+  const BASE={1:0.40,2:0.35,3:0.25};
+  // Calcola slot per ogni livello con redistribuzione proporzionale se non ci sono abbastanza parole
+  function computeSlots(totalCap, available){
+    let weights={...BASE};
+    let result={1:0,2:0,3:0};
+    let remaining=totalCap;
+    let iterations=0;
+    while(remaining>0 && iterations<10){
+      iterations++;
+      const wSum=Object.values(weights).reduce((a,b)=>a+b,0);
+      if(wSum===0)break;
+      let assigned={1:0,2:0,3:0};
+      [1,2,3].forEach(l=>{
+        assigned[l]=Math.min(available[l]-result[l], Math.round((weights[l]/wSum)*remaining));
+      });
+      // arrotondamento: distribuisci remainder
+      let total=assigned[1]+assigned[2]+assigned[3];
+      let diff=Math.min(remaining,Object.values(available).reduce((a,b)=>a+b,0)-Object.values(result).reduce((a,b)=>a+b,0))-total;
+      if(diff>0){
+        const order=[1,2,3].sort((a,b)=>(weights[b]/wSum)-(weights[a]/wSum));
+        for(let i=0;i<diff;i++){
+          const l=order[i%3];
+          if(result[l]+assigned[l]<available[l])assigned[l]++;
+        }
+      }
+      [1,2,3].forEach(l=>{ result[l]+=assigned[l]; });
+      remaining=totalCap-result[1]-result[2]-result[3];
+      // rimuovi livelli esauriti dai pesi
+      [1,2,3].forEach(l=>{ if(result[l]>=available[l]) weights[l]=0; });
+      if(Object.values(weights).reduce((a,b)=>a+b,0)===0)break;
+    }
+    return result;
   }
+  const slots=computeSlots(cap, avail);
+  const result=[];
+  [1,2,3].forEach(l=>{ for(let i=0;i<slots[l];i++) if(byLevel[l][i]) result.push(byLevel[l][i]); });
   const wordMap=new Map(RAW.map(w=>[w[0],w]));
   return result.map(s=>({rawWord:wordMap.get(s.wordId),wordId:s.wordId,level:s.level})).filter(x=>x.rawWord);
 }
@@ -752,16 +800,19 @@ function promoteSrs(wordId){
   const id=Number(wordId);
   const e=srsWords.find(s=>Number(s.wordId)===id);
   if(!e)return;
-  e.level++;
-  if(e.level>=4){
+  if(e.level<3){
+    e.level++;
+    e.nextSession=sessionCount; // subito disponibile per prossima sessione
+  } else {
+    // livello 3 → corretto → torna Parola Normale, Contatore Ripasso -1
     srsWords=srsWords.filter(s=>Number(s.wordId)!==id);
     if(_srsSlotCount>0) _srsSlotCount--;
-  } else {
-    e.nextSession=sessionCount+SRS_INTERVALS[e.level];
   }
   saveLastParams(); updateSrsBadge();
 }
 function demoteSrs(wordId){
+  // Parola Ripasso sbagliata: rimane al suo livello attuale, diventa Parola Drill
+  // Il Contatore Ripasso rimane immutato (non incrementa)
   saveLastParams(); updateSrsBadge();
 }
 function incrSessionCount(){
@@ -883,12 +934,18 @@ async function evaluateAnswer(ans, isDrill){
     const isSrsWord=window._srsWordIds&&window._srsWordIds.has(Number(w[0]));
     if(correct){
       stats.correct++;
-      if(isSrsWord) promoteSrs(w[0]);
+      if(isSrsWord){
+        // Parola Ripasso corretta → promovi livello (o rimuovi se era liv3)
+        promoteSrs(w[0]);
+      }
     } else {
       stats.wrong++;
       if(isSrsWord){
+        // Parola Ripasso sbagliata → rimane al suo livello, diventa Drill, Contatore Drill +1
+        // Contatore Ripasso immutato (non chiama addToSrs né modifica srsWords.length)
         demoteSrs(w[0]);
       } else {
+        // Parola Normale sbagliata → diventa Parola Ripasso liv1, Contatore Ripasso +1
         addToSrs(w[0]);
       }
       const exists=drill.find(d=>d.word[0]===w[0]);
@@ -942,7 +999,7 @@ function nextDrillWord(){
   document.getElementById('drill-manual-text').value='';
   setTimeout(async()=>{const spoken=exerciseMode==='en'?((w[2]==='verbo'?'To ':'')+w[1]):w[3].split(';')[0].trim().split('/')[0].trim(); await speakAsyncLang(spoken,exerciseMode==='en'?'en-US':'it-IT');},300);
 }
-function showWord(){if(isPaused)return; isEvaluating=false; const w=words[currentIdx]; document.getElementById('word-category').textContent=w[2].charAt(0).toUpperCase()+w[2].slice(1); if(exerciseMode==='en')setWordText('word-english',(w[2]==='verbo'?'To ':'')+w[1]); else setWordText('word-english',w[3].split(';')[0].trim().split('/')[0].trim()); const pct=(currentIdx/W)*100; document.getElementById('progress-fill').style.width=pct+'%'; const _srsStr=_srsSlotCount>0?'+'+_srsSlotCount:'+0'; document.getElementById('ex-progress-label').textContent=`PAROLA ${currentIdx+1} DI ${W}${_srsStr} DA ${S}`; document.getElementById('ex-progress-label').style.color='var(--accent)'; document.getElementById('feedback').className='feedback'; document.getElementById('manual-text').value=''; setTimeout(async()=>{const spoken=exerciseMode==='en'?((w[2]==='verbo'?'To ':'')+w[1]):w[3].split(';')[0].trim().split('/')[0].trim(); await speakAsyncLang(spoken,exerciseMode==='en'?'en-US':'it-IT');},300);}
+function showWord(){if(isPaused)return; isEvaluating=false; const w=words[currentIdx]; document.getElementById('word-category').textContent=w[2].charAt(0).toUpperCase()+w[2].slice(1); if(exerciseMode==='en')setWordText('word-english',(w[2]==='verbo'?'To ':'')+w[1]); else setWordText('word-english',w[3].split(';')[0].trim().split('/')[0].trim()); const pct=(currentIdx/W)*100; document.getElementById('progress-fill').style.width=pct+'%'; const _srsStr='+'+_srsSlotCount; document.getElementById('ex-progress-label').textContent=`PAROLA ${currentIdx+1} DI ${W}${_srsStr} DA ${S}`; document.getElementById('ex-progress-label').style.color='var(--accent)'; document.getElementById('feedback').className='feedback'; document.getElementById('manual-text').value=''; setTimeout(async()=>{const spoken=exerciseMode==='en'?((w[2]==='verbo'?'To ':'')+w[1]):w[3].split(';')[0].trim().split('/')[0].trim(); await speakAsyncLang(spoken,exerciseMode==='en'?'en-US':'it-IT');},300);}
 function startDrill(){if(drill.length===0){showEnd();return;} document.getElementById('drill-confirm-count').textContent=drill.length; showScreen('screen-drill-confirm'); speakAsyncLang(`Vuoi consolidare le ${drill.length} parole sbagliate?`,'it-IT');}
 function confirmDrill(yes){if(yes){drillQueue=[];showScreen('screen-drill');nextDrillWord();}else showEnd();}
 function showEnd(){if(currentRecognition)try{currentRecognition.stop()}catch(e){} currentRecognition=null; if(pendingEvalTimeout)clearTimeout(pendingEvalTimeout); const total=stats.correct+stats.wrong; const pct=total>0?Math.round((stats.correct/total)*100):0; document.getElementById('stat-correct').textContent=stats.correct; document.getElementById('stat-wrong').textContent=stats.wrong; document.getElementById('stat-total').textContent=total; document.getElementById('stat-pct').textContent=pct+'%'; const _eS=document.getElementById('end-S'); const _eW=document.getElementById('end-W'); if(_eS)_eS.textContent=S; if(_eW)_eW.textContent=W; showScreen('screen-end');}
